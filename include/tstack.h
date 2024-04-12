@@ -1,47 +1,43 @@
-#ifndef INCLUDE_TSTACK_H_
-#define INCLUDE_TSTACK_H_
+#ifndef TSTACK_H
+#define TSTACK_H
 
-template<typename T, int size>
-template <typename T, int SIZE>
+template<typename T, int maxsize>
 class TStack {
-  // добавьте код стека
- private:
-  T *data = new T[100];
-  int topa = 0, size = 100;
+private:
+    T data[maxsize];
+    int top;
 
- public:
-  TStacK() {
-    data = new T[SIZE];
-    size = SIZE;
-    topa = 0;
-  }
-  ~TStacK() { delete[] data; }
-  void push(T item) {
-    data[topa] = item;
-    topa++;
-  }
-  T pop() {
-    if (top == 0) {
-      throw "Stack is empty!";
-    } else {
-      topa -= 1;
-      return data[topa];
+public:
+    TStack() {
+        top = -1;
     }
-  }
-  T check() {
-    if (topa == 0) {
-      throw "Stack is empty!";
-    } else {
-      return data[topa - 1];
+
+    bool isEmpty() {
+        return (top == -1);
     }
-  }
-  bool isempty() {
-    if (topa == 0) {
-      return true;
-    } else {
-      return false;
+
+    bool isFull() {
+        return (top == maxsize - 1);
     }
-  }
+
+    void push(T val) {
+        if (!isFull()) {
+            top++;
+            data[top] = val;
+        }
+    }
+
+    void pop() {
+        if (!isEmpty()) {
+            top--;
+        }
+    }
+
+    T get() {
+        if (!isEmpty()) {
+            return data[top];
+        }
+    }
 };
 
-#endif  // INCLUDE_TSTACK_H_
+#endif
