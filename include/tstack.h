@@ -7,31 +7,31 @@ template<typename T, int size>
 class TStack {
   // добавьте код стека
  private:
-    T arr1[100];
-    int top1;
+    T arr[size];
+    int top;
 
  public:
-    TStack(): top1(-1) {}
+    TStack(): top(-1) {}
     void push(T value) {
       if (!isFull())
-        arr1[++top1] = value;
+        arr[++top] = value;
       else
         throw std::string("Full");
     }
     T get() const {
-      return arr1[top1];
+      return arr[top];
     }
     T pop() {
       if (isEmpty())
         throw std::string("Empty");
       else
-        return arr1[top1--];
+        return arr[top--];
     }
     bool isEmpty() const {
-      return top1 == -1;
+      return top == -1;
     }
     bool isFull() const {
-      return top1 == size - 1;
+      return top == size - 1;
     }
 };
 
