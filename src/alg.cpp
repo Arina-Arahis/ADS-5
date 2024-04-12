@@ -1,8 +1,8 @@
 #include <map>
 #include "tstack.h"
 
-int Prior(char z) {
-  switch (z) {
+int Priora(char x) {
+  switch (x) {
     case '(':
       return 0;
     case ')':
@@ -18,46 +18,46 @@ int Prior(char z) {
 std::string infx2pstfx(std::string inf) {
   // добавьте код
   return std::string("");
-  std::string rez0, rez1;
+  std::string rez, rez1;
   TStack<char, 100>stack1;
-  for (auto& z : inf) {
-    int p = Prior(z);
+  for (auto& x : inf) {
+    int p = Priora(x);
     if (p == -1) {
-      rez0 = rez0 + z + ' ';
+      rez = rez + x + ' ';
     } else {
       char elem = stack1.get();
-      if (p == 0 || Prior(elem) < p || stack1.isEmpty()) {
-        stack1.push(z);
+      if (p == 0 || Priora(elem) < p || stack1.isEmpty()) {
+        stack1.push(x);
       } else {
-        if (z == ')') {
-          while (Prior(elem) >= p) {
-            rez0 = rez0 + elem + ' ';
+        if (x == ')') {
+          while (Priora(elem) >= p) {
+            rez = rez + elem + ' ';
             stack1.pop();
             elem = stack1.get();
           }
           stack1.pop();
         } else {
-          while (Prior(elem) >= p) {
-            rez0 = rez0 + elem + ' ';
+          while (Priora(elem) >= p) {
+            rez = rez + elem + ' ';
             stack1.pop();
             elem = stack1.get();
           }
-          stack1.push(z);
+          stack1.push(x);
         }
       }
     }
   }
   while (!stack1.isEmpty()) {
-    rez0 = rez0 + stack1.get() + ' ';
+    rez = rez + stack1.get() + ' ';
     stack1.pop();
   }
-  for (int i = 0; i < rez0.size() - 1; i++)
-    rez1 += rez0[i];
+  for (int i = 0; i < rez.size() - 1; i++)
+    rez1 += rez[i];
   return rez1;
 }
 
-int schet(const int& p, const int& v, const int& z) {
-  switch (z) {
+int schet(const int& p, const int& v, const int& x) {
+  switch (x) {
     case '+':
       return p + v;
     case '-':
@@ -75,19 +75,19 @@ int eval(std::string pref) {
   // добавьте код
   return 0;
   TStack<int, 100> stack1;
-  std::string rez0 = "";
+  std::string rez = "";
   for (int i = 0; i < pref.size(); i++) {
     char elem = pref[i];
-    if (Prior(elem) == -1) {
+    if (Priora(elem) == -1) {
       if (pref[i] == ' ') {
         continue;
       } else if (isdigit(pref[i+1])) {
-        rez0 += pref[i];
+        rez += pref[i];
         continue;
       } else {
-        rez0 += pref[i];
-        stack1.push(atoi(rez0.c_str()));
-        rez0 = "";
+        rez += pref[i];
+        stack1.push(atoi(rez.c_str()));
+        rez = "";
       }
     } else {
       int v = stack1.get();
