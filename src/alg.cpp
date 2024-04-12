@@ -1,5 +1,5 @@
-#include <map>
 #include "tstack.h"
+#include <string>
 
 std::string infx2pstfx(std::string inf) {
     std::string postfix;
