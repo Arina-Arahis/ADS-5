@@ -1,100 +1,81 @@
 #include <map>
 #include "tstack.h"
 
-static int get_pr(char el) {
-  if (el == '(') {
-    return 0;
-  } else if (el == ')') {
-    return 1;
-  } else if ((el == '+') || (el == '-')) {
-    return 2;
-  } else if ((el == '*') || (el == '/')) {
-    return 3;
-  } else {
-    throw "Unknown Symbol!";
-  }
-}
-
 std::string infx2pstfx(std::string inf) {
-  // добавьте код
-  return std::string("");
-  std::string outa = "";
-  TStack<char, 100> chars;
-  for (int i = 0; i < inf.length(); i++) {
-    if (isdigit(inf[i])) {
-      outa += inf[i];
-      if (i != inf.length() - 1) {
-        outa += " ";
-      }
-    } else if (inf[i] == '(') {
-      chars.push(inf[i]);
-    } else if (chars.isempty()) {
-      chars.push(inf[i]);
-    } else if (inf[i] == ')') {
-      while (true) {
-        if (chars.isempty()) {
-          break;
-        } else if (chars.check() == '(') {
-          break;
+    std::string postfix;
+    TStack<char, 100> stack;
+    std::map<char, int> priority;
+    priority['+'] = 1;
+    priority['-'] = 1;
+    priority['*'] = 2;
+    priority['/'] = 2;
+
+    for (char c : inf) {
+        if (isdigit(c)) {
+            postfix += c;
+            postfix += ' ';
+        } else if (c == '(') {
+            stack.push(c);
+        } else if (c == ')') {
+            while (!stack.isEmpty() && stack.get() != '(') {
+                postfix += stack.get();
+                postfix += ' ';
+                stack.pop();
+            }
+            stack.pop();
+        } else if (priority.count(c)) {
+            while (!stack.isEmpty() && priority[c] <= priority[stack.get()]) {
+                postfix += stack.get();
+                postfix += ' ';
+                stack.pop();
+            }
+            stack.push(c);
         }
-        outa += chars.pop();
-        if (i != inf.length() - 1) {
-          outa += " ";
-        }
-      }
-      chars.pop();
-    } else if (get_pr(inf[i]) > get_pr(chars.check())) {
-      chars.push(inf[i]);
-    } else {
-      while (true) {
-        if (chars.isempty()) {
-          break;
-        } else if (!(get_pri(inf[i]) <= get_pr(chars.check()))) {
-          break;
-        }
-        outa += chars.pop();
-        if (i != inf.length() - 1) {
-          outa += " ";
-        }
-      }
-      chars.push(inf[i]);
     }
-  }
-  while (!chars.isempty()) {
-    outa += " ";
-    outa += chars.pop();
-  }
-  return outa;
+
+    while (!stack.isEmpty()) {
+        postfix += stack.get();
+        postfix += ' ';
+        stack.pop();
+    }
+
+    if (!postfix.empty()) {
+        postfix.pop_back(); // Remove the last space
+    }
+
+    return postfix;
 }
 
-int eval(std::string pref) {
-  // добавьте код
-  return 0;
-  std::string time = "";
-  TStack<int, 100> ints;
-  for (int i = 0; i < pref.length(); i++) {
-    if (isdigit(pref[i])) {
-      time += pref[i];
-    } else if (time.length() && pref[i] == ' ') {
-      ints.push(atoi(time.c_str()));
-      time = "";
-    } else if (pref[i] == '+') {
-      int two = ints.pop();
-      int one = ints.pop();
-      ints.push(one + two);
-    } else if (pref[i] == '-') {
-      int two = ints.pop();
-      int one = ints.pop();
-      ints.push(one - two);
-    } else if (pref[i] == '*') {
-      int two = ints.pop();
-      int one = ints.pop();
-      ints.push(one * two);
-    } else if (pref[i] == '/') {
-      int two = ints.pop();
-      int one = ints.pop();
-      ints.push(one / two);
+int eval(std::string post) {
+    TStack<int, 100> stack;
+
+    for (char c : post) {
+        if (isdigit(c)) {
+            stack.push(c - '0'); // Convert char to int
+        } else if (c == ' ') {
+            continue;
+        } else {
+            int operand2 = stack.get();
+            stack.pop();
+            int operand1 = stack.get();
+            stack.pop();
+
+            switch (c) {
+                case '+':
+                    stack.push(operand1 + operand2);
+                    break;
+                case '-':
+                    stack.push(operand1 - operand2);
+                    break;
+                case '*':
+                    stack.push(operand1 * operand2);
+                    break;
+                case '/':
+                    stack.push(operand1 / operand2);
+                    break;
+            }
+        }
     }
-  }
-  return ints.pop();
+
+    return stack.get();
 }
