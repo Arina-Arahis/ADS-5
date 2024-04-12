@@ -1,5 +1,3 @@
-// Copyright 2021 NNTU-CS
-#include <string>
 #include <map>
 #include "tstack.h"
 
@@ -8,14 +6,14 @@ std::string infx2pstfx(std::string inf) {
   return std::string("");
 }
 
-int getPriority(char operand) {
-    if (operand == '+' || operand == '-') return 1;
-    if (operand == '*' || operand == '/') return 2;
+int getPriority(char op) {
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
     return 0;
 }
 
-bool isOperator(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/');
+bool isOperator(char ch) {
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
 }
 
 int evaluate(std::string pref) {
@@ -26,20 +24,20 @@ int evaluate(std::string pref) {
 std::string infixToPostfix(std::string inf) {
     std::string postfix;
     TStack<char, 100> stack;
-    for (char c : inf) {
-        if (isdigit(c)) {
-            postfix += c;
+    for (char ch : inf) {
+        if (isdigit(ch)) {
+            postfix += ch;
             postfix += ' ';
-        } else if (c == '(') {
-            stack.push(c);
-        } else if (isOperator(c)) {
-            while (!stack.isEmpty() && getPriority(stack.get()) >= getPriority(c)) {
+        } else if (ch == '(') {
+            stack.push(ch);
+        } else if (isOperator(ch)) {
+            while (!stack.isEmpty() && getPriority(stack.get()) >= getPriority(ch)) {
                 postfix += stack.get();
                 postfix += ' ';
                 stack.pop();
             }
-            stack.push(c);
-        } else if (c == ')') {
+            stack.push(ch);
+        } else if (ch == ')') {
             while (!stack.isEmpty() && stack.get() != '(') {
                 postfix += stack.get();
                 postfix += ' ';
@@ -62,30 +60,30 @@ std::string infixToPostfix(std::string inf) {
 int evaluate(std::string post) {
     TStack<int, 100> stack;
     std::string number;
-    for (char c : post) {
-        if (isdigit(c)) {
-            number += c;
+    for (char ch : post) {
+        if (isdigit(ch)) {
+            number += ch;
         } else if (!number.empty()) {
             stack.push(std::atoi(number.c_str()));
             number.clear();
         }
-        if (isOperator(c)) {
-            int op2 = stack.get();
+        if (isOperator(ch)) {
+            int operand2 = stack.get();
             stack.pop();
-            int op1 = stack.get();
+            int operand1 = stack.get();
             stack.pop();
-            switch (c) {
+            switch (ch) {
                 case '+':
-                    stack.push(op1 + op2);
+                    stack.push(operand1 + operand2);
                     break;
                 case '-':
-                    stack.push(op1 - op2);
+                    stack.push(operand1 - operand2);
                     break;
                 case '*':
-                    stack.push(op1 * op2);
+                    stack.push(operand1 * operand2);
                     break;
                 case '/':
-                    stack.push(op1 / op2);
+                    stack.push(operand1 / operand2);
                     break;
             }
         }
